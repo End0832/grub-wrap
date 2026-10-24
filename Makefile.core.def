@@ -1,0 +1,15 @@
+ # 
+ # Makefile.core.def - Declares the "wrap" module to GRUB
+ # (https://github.com/end0832/grub-wrap)
+ # 
+ # Copyright (c) 2026 End0832_.
+ # SPDX-License-Identifier: MIT (text in LICENSES/MIT.txt)
+ # 
+
+   AutoGen definitions Makefile.tpl;
+
+   module = {
+     name = wrap;
+     common = contrib/wrap/wrap.c;
+     enable = x86;
+   };
