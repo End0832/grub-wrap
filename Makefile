@@ -48,6 +48,7 @@ link:
 		exit 1; \
 	fi; \
 	rm -rf $(DIR)/contrib $(DIR)/grub-core/contrib && \
+	mkdir -p $(CONTRIB_DIR) && \
 	ln -s "$(MDIR)" "$(CONTRIB_DIR)/wrap" && \
 	ln -s "$(CONTRIB_DIR)" "$(DIR)/contrib" && \
 	ln -s ../contrib "$(DIR)/grub-core/contrib" && \
