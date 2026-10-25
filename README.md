@@ -12,7 +12,22 @@ The usual answer in the seL4 ecosystem is a CPIO archive: the files are packed i
 The goal here was the opposite: the files stay as plain files on the boot partition, and are picked up as they are at every boot. GRUB already knows how to read the disk and its filesystem before the kernel starts, so the module takes advantage of that. The root task receives its resources without needing a storage driver, and can then use them to bring up its own drivers and mount the real filesystem.
 
 ## Usage
-`grub.cfg:`
+After recieving your `wrap.mod` file, you can make a GRUB bootable image that includes your wrap.mod file:
+
+```bash
+grub-mkimage \
+    -d /path/to/file/wrap.mod
+    -O x86_64-efi
+    -o BOOTX64.EFI
+    -p /grub/
+    part_gpt part_msdos fat multiboot2 normal wrap
+```
+
+Make sure `multiboot2` module is included as `wrap` depends of it.
+
+
+In your `grub.cfg` file, you will have this syntax:
+
 ```
 multiboot2 kernel.elf
 wrap roottask.elf FILE1 FILE2 ...
@@ -23,7 +38,8 @@ boot
 - The first argument is the root task ELF. Every further argument is a file to attach. Paths are resolved by GRUB, so `(hd0,gpt1)/x` works.
 - File names are stored exactly as typed and are the keys the root task looks up.
 
-`roottask:`
+In order to decode the pool `wrap` have made, the `pool.h` file is given to you. you can use it as following:
+
 ```c
 #include "pool.h"
 
@@ -37,7 +53,10 @@ if (!pool.ok) {
 }
 ```
 
-`start[i]` points at the first byte of file `name[i]`; its contents are `size[i]` bytes long. Names and contents live inside the pool: nothing is copied or allocated.
+`start[i]` points at the first byte of file `name[i]`; its contents are `size[i]` bytes long. 
+
+Names and contents live inside the pool: nothing is copied or allocated.
+
 If an error occurs, pool.ok switches to false and pool.error contains the error message.
 
 ## How it works
@@ -68,16 +87,26 @@ Here is the actual pool format:
 Each table entry is the file size on `w` bytes, **big-endian**, followed by the file name and a terminating `0` byte.
 Contents follow the table, concatenated in table order, with no padding. `w` is the smallest width that holds the largest file.
 
-## Building the module
-1. Get the [grub source code](https://gitlab.freedesktop.org/gnu-grub/grub/) and compile it completely. (WARNING: GRUB compilation can be really long).
+## Building the module from source
+1. Get the [grub source code](https://gitlab.freedesktop.org/gnu-grub/grub/) and compile it completely:
+
+```bash
+./bootstrap
+./autogen.sh
+./configure --target=x86_64 --with-platform=efi
+make
+```
+
+(WARNING: GRUB compilation can be really long).
 2. Download and extract a version of grub-wrap.
 3. Run `make link DIR=/path/to/your/compiled/grub/directory`.
 4. If everything went right, run `make build DIR=/path/to/your/compiled/grub/directory`.
-5. The module has now been added as wrap. You can use `grub-mkimage` and include it as every other module to create a GRUB bootable image.
+5. The module has now been added as wrap.
+You can find it as `wrap.mod` in `grub-core/`. At this stage, you can pick up the file and use it at your sake. You can also let it here and use `grub-mkimage` and include it as every other module to create a GRUB bootable image.
 
 If needed, you can unlink and delete the module from the grub installation with `make unlink DIR=/path/to/your/compiled/grub/directory`
 
-WARNING: `wrap.mod` must be built from the same GRUB version, for the same platform, as the GRUB that loads it. It is not a standalone binary.
+WARNING: `wrap.mod` must be built from the same GRUB version, for the same platform, as the GRUB that loads it.
 
 ## Notes
 - Limits: 64 files, 4 GiB - 1 bytes per file, 255 bytes per name.
@@ -93,5 +122,8 @@ WARNING: `wrap.mod` must be built from the same GRUB version, for the same platf
 
 The full license texts are in the `LICENSES/` directory, named after their SPDX identifiers.
 
+---
+
 Copyright (c) 2026 End0832_.
+
 SPDX-License-Identifier: MIT (text in LICENSES/MIT.txt)
