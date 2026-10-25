@@ -1,12 +1,7 @@
 # grub-wrap
 
-A GRUB 2 module that attaches files to a root task and hands the whole thing to the kernel as a single Multiboot2 module. 
-A one-header C reader is given too for the root task to read the attached files.
-
-| File | Role | License |
-|---|---|---|
-| `wrap.c` | GRUB module providing the `wrap` command | GPL-3.0-or-later |
-| `pool.h` | Root task side: decodes the pool | MIT |
+[A GRUB 2 module](wrap.c) that attaches files to a root task and hands the whole thing to the kernel as a single Multiboot2 module. 
+[A one-header C](pool.h) reader is given too for the root task to read the attached files.
 
 ## Why this exists
 
