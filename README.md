@@ -12,11 +12,11 @@ The usual answer in the seL4 ecosystem is a CPIO archive: the files are packed i
 The goal here was the opposite: the files stay as plain files on the boot partition, and are picked up as they are at every boot. GRUB already knows how to read the disk and its filesystem before the kernel starts, so the module takes advantage of that. The root task receives its resources without needing a storage driver, and can then use them to bring up its own drivers and mount the real filesystem.
 
 ## Usage
-After recieving your `wrap.mod` file, you can make a GRUB bootable image that includes your wrap.mod file:
+After recieving your `wrap.mod` file, make a symlink of it in your grub installation for it to find it: `ln -s /path/to/file/wrap.mod /path/to/grub/grub-core/wrap.mod`. You can then make a GRUB bootable image that includes your wrap.mod file:
 
 ```bash
 grub-mkimage \
-    -d /path/to/file/wrap.mod
+    -d /path/to/grub/grub-core
     -O x86_64-efi
     -o BOOTX64.EFI
     -p /grub/
