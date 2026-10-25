@@ -61,7 +61,8 @@ unlink:
 	rm -rf grub-core/wrap.marker \
 	    grub-core/wrap.mod \
 	    grub-core/wrap.module && \
-	python3 gentpl.py grub-core/Makefile.core.def grub-core/Makefile.gcry.def > grub-core/Makefile.core.am
+	python3 gentpl.py grub-core/Makefile.core.def grub-core/Makefile.gcry.def > grub-core/Makefile.core.am && \
+	sed -i '/wrap: multiboot2 relocator/d' $(DIR)/grub-core/moddep.lst
 
 build:
 	cd $(DIR) && \
