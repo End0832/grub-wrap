@@ -38,7 +38,7 @@ boot
 - The first argument is the root task ELF. Every further argument is a file to attach. Paths are resolved by GRUB, so `(hd0,gpt1)/x` works.
 - File names are stored exactly as typed and are the keys the root task looks up.
 
-In order to decode the pool `wrap` have made, the `pool.h` file is given to you. you can use it as following:
+In order to decode the pool the module have made, the `pool.h` file is given to you. You can use it as following:
 
 ```c
 #include "pool.h"
