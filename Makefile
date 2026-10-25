@@ -8,11 +8,13 @@
  # 2. Download and extract a version of grub-wrap.
  # 3. Run `make link DIR=/path/to/your/compiled/grub/directory`.
  # 4. If everything went right, run `make build DIR=/path/to/your/compiled/grub/directory`.
- # 5. The module has now been added as wrap. You can use `grub-mkimage` and include it as every other module to create a GRUB bootable image.
+ # 5. The module has now been added as wrap. You can find the file `wrap.mod` in `grub-core/`.
  # 
  # If needed, you can unlink and delete the module from the grub installation with `make unlink DIR=/path/to/your/compiled/grub/directory`
  # 
- # WARNING: `wrap.mod` must be built from the same GRUB version, for the same platform, as the GRUB that loads it. It is not a standalone binary.
+ # WARNING: `wrap.mod` must be built from the same GRUB version, for the same platform, as the GRUB that loads it.
+ # 
+ # For more informations, please check the README.MD file.
  # 
 
 MDIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -45,17 +47,17 @@ link:
 			"Use force=1 to continue."; \
 		exit 1; \
 	fi; \
-	rm -f $(DIR)/contrib $(DIR)/grub-core/contrib && \
+	rm -rf $(DIR)/contrib $(DIR)/grub-core/contrib && \
 	ln -s "$(MDIR)" "$(CONTRIB_DIR)/wrap" && \
 	ln -s "$(CONTRIB_DIR)" "$(DIR)/contrib" && \
 	ln -s ../contrib "$(DIR)/grub-core/contrib" && \
 	cd $(DIR) && python3 gentpl.py grub-core/Makefile.core.def grub-core/Makefile.gcry.def contrib/wrap/Makefile.core.def > grub-core/Makefile.core.am && \
-	cd $(MDIR) && rm -r .deps-core .dirstamp wrap_module-wrap.o
+	cd $(MDIR) && rm -rf .deps-core .dirstamp wrap_module-wrap.o
 
 unlink:
 	cd $(DIR) && \
-	rm -f contrib grub-core/contrib $(CONTRIB_DIR)/wrap && \
-	rm grub-core/wrap.marker \
+	rm -rf contrib grub-core/contrib $(CONTRIB_DIR)/wrap && \
+	rm -rf grub-core/wrap.marker \
 	    grub-core/wrap.mod \
 	    grub-core/wrap.module && \
 	python3 gentpl.py grub-core/Makefile.core.def grub-core/Makefile.gcry.def > grub-core/Makefile.core.am
