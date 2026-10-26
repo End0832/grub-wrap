@@ -112,7 +112,7 @@ WARNING: `wrap.mod` must be built from the same GRUB version, for the same platf
 - Limits: 64 files, 4 GiB - 1 bytes per file, 255 bytes per name.
 - The module's memory is allocated through the Multiboot relocator, below 4 GiB, page aligned. A block much larger than the kernel's gaps also avoids being placed in a small hole between kernel sections. If the kernel refuses to boot because the module was placed in a small gap, pad the last attached file with zeros (a few MiB is enough).
 - `wrap` reads files with compression filters disabled, so a `.gz` file is attached as-is.
-- On any error `wrap` returns a GRUB error and registers no module; boot then stops at the `boot` command.
+- On any error `wrap` returns a GRUB error and registers no module.
 
 ## License
 
